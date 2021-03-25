@@ -3,7 +3,10 @@
   overflow-y: hidden;
   overflow-x: scroll;
 }
-
+.row {
+  color: white;
+  margin-left: 20px;
+}
 .row__poster {
   object-fit: contain;
   width: 100%;

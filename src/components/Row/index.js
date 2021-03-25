@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import "./style.css";
+import Youtube from "react-youtube";
+import movieTrailer from "movie-trailer";
 
-const Row = ({ title, fetchUrl, isLarge }) => {
+const base_url = "https://image.tmdb.org/t/p/original/";
+
+function Row({ title, fetchUrl, isLargeRow }) {
   const [movies, setMovies] = useState([]);
-  const base_url = "https://image.tmdb.org/t/p/original/";
+  const [trailerUrl, setTrailerUrl] = useState("");
+
   useEffect(() => {
     async function fetchData() {
       const request = await axios.get(fetchUrl); // <-- When using a variable from outside
@@ -12,33 +17,54 @@ const Row = ({ title, fetchUrl, isLarge }) => {
       return request; // inside the '[]' at the end of useEffect()
     }
     fetchData();
-
-    // axios.get(fetchUrl).then((result) => {
-    //   setMovies(result.data.results);
-    // });
   }, [fetchUrl]); // <-- Here's where we need to put the outside variable
-  //  If we leave the '[]' blank, this code only runs once when the 'Row' loads.
-  // If we put a variable like 'movies' inside the '[]', this code will run once
+
+  // ^-- If you leave the '[]' blank, this code only runs once when the 'Row' loads.
+  // If you put a variable like 'movies' inside the '[]', this code will run once
   // when the page first loads and everytime that varible changes. That variable is
   // called the dependency.
 
+  // https://developers.google.com/youtube/player_parameters
+  console.log(movies);
+  const opts = {
+    height: "390",
+    width: "100%",
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+  const handleClick = (movie) => {
+    console.log(movie.name);
+    if (trailerUrl) {
+      setTrailerUrl("");
+    } else {
+      movieTrailer(movie?.name || "")
+        .then((url) => {
+          const urlParams = new URLSearchParams(new URL(url).search);
+          setTrailerUrl(urlParams.get("v"));
+        })
+        .catch((error) => console.log(error));
+    }
+  };
   return (
-    <div>
+    <div className="row">
       <h2>{title}</h2>
       <div className="row__posters">
-        {movies.map((movie, index) => (
+        {movies.map((movie) => (
           <img
-            className={`row__poster ${isLarge && "row__posterLarge"}`}
+            key={movie.id}
+            onClick={() => handleClick(movie)}
+            className={`row__poster ${isLargeRow && "row__posterLarge"}`}
             src={`${base_url}${
-              isLarge ? movie.poster_path : movie.backdrop_path
+              isLargeRow ? movie.poster_path : movie.backdrop_path
             }`}
             alt={movie.name}
-            key={index}
           />
         ))}
       </div>
+      {trailerUrl && <Youtube videoId={trailerUrl} opts={opts} />}
     </div>
   );
-};
+}
 
 export default Row;

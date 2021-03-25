@@ -2,15 +2,19 @@ import "./App.css";
 import Row from "./components/Row";
 import request from "./request";
 import Banner from "./components/Banner";
-
+import Nav from "./components/Nav";
 function App() {
   return (
     <div className="App">
+      <Nav />
       <div className="Header">
         <Banner />
       </div>
-      <Row title="Trending Now" fetchUrl={request.fetchTrending} isLarge />{" "}
-      {/*here isLarge is similar to isLarge={true}*/}
+      <Row
+        title="Trending Now"
+        fetchUrl={request.fetchTrending}
+        isLarge={true}
+      />
       <Row title="Netflix Originals" fetchUrl={request.fetchNetflixOriginals} />
       <Row title="Top Rated" fetchUrl={request.fetchTopRated} />
       <Row title="Action Movies" fetchUrl={request.fetchActionMovies} />
