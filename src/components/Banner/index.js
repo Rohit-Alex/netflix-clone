@@ -13,8 +13,8 @@ const Banner = () => {
           Math.floor(Math.random() * result.data.results.length - 1)
         ]
       );
-      console.log(result);
-      console.log(Math.floor() * result.data.results.length - 1);
+      // console.log(result);
+      // console.log(Math.floor() * result.data.results.length - 1);
       return result;
     }
     fetchData();
